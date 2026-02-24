@@ -1,7 +1,0 @@
-/src/main/java/mx/openpay/multicountry/core/ @@arqui-poc-core-team
-/src/main/java/mx/openpay/multicountry/es/ @@arqui-poc-es-team
-/src/main/java/mx/openpay/multicountry/mx/ @@arqui-poc-mx-team
-
-Check(@@arqui-poc-core-team >= 1)
-Check(@@arqui-poc-es-team >= 1)
-Check(@@arqui-poc-mx-team >= 1)
