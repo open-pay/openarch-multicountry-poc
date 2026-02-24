@@ -1,6 +1,7 @@
 jdk_tool = 'java-21'
 maven_install = 'openpay-maven-3.9.6'
 aws_account = 'openpay'
+git_credentials_id = 'jenkins-github-latam-ct'
 
 libraries {
 	maven
