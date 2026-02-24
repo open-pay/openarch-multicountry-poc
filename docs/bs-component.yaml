@@ -1,0 +1,38 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: {{repository.name}}
+  title: {{repository.name.title}}
+  description: {{component.description}}
+  annotations:
+    backstage.io/techdocs-ref: url:{{repository.url}}/develop
+    jenkins.io/job-full-name: central:{{jenkins.pipeline}}
+    sonarqube.org/project-key: globalSonar/{{sonarqube.projectKey}}
+  tags:
+    - service
+    - anade
+  archetype: Ánade
+  technology: Java
+  frameworks: Spring Boot
+  compilationType: Maven
+  infrastructure:
+    environments:
+      - name: {{component.env}}
+        logSet: {{component.env.logSet}}
+        secretsManager: {{component.env.secretsManager}}
+        accountId: {{component.env.accountId}}
+        region: {{component.env.region}}
+  databaseObjects:
+    - database: {{component.database.name}}
+      objects:
+        - object: {{component.database.objects[0].name}}
+          objectType: {{component.database.objects[0].type}}
+spec:
+  type: service
+  lifecycle: experimental
+  owner: {{backstage.owner}}
+  domain: {{backstage.domain}}
+  system: {{backstage.system}}
+  dependsOn:
+    - 'resource:{{backstage.resource}}'
+    

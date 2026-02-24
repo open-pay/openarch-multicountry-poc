@@ -1,0 +1,97 @@
+logging: # Ejemplo de ambiente y pais, para validar que si va en uno y que va en no
+   level:
+      root: INFO
+   appenders:
+      console:
+         enabled: true
+      file:
+         enabled: false
+         absolute-path: logs/${spring.application.name}.log #Ruta absoluta donde se guardará el archivo de log. Para dev, qa, sand y prod la ruta debe ser /app-data/logs/${spring.application.name}.log
+      rapid7:
+         enabled: false
+         #token: ${sm.logging.appenders.rapid7.token} #Token de rapid7. Para dev, qa, sand y prod, esta propiedad debe darse de alta en aws secrets manager. Para local, esta propiedad debe pasarse mediante propiedades del sistema o variables de ambiente.
+         #region: REGION #Región de rapid7.
+      splunk:
+         enabled: false
+         #token: ${sm.logging.appenders.splunk.token} #Token de splunk. Para dev, qa, sand y prod, esta propiedad debe darse de alta en aws secrets manager. Para local, esta propiedad debe pasarse mediante propiedades del sistema o variables de ambiente.
+         #url: URL #Url de splunk.
+         #index: INDEX #Índice de splunk.
+server:
+   port: 8443 #Puerto del servidor, no cambiar para ambientes dev, qa, sand y prod.
+   ssl:
+      enabled: false
+      #bundle: tomcat #Nombre del bundle que usará el servidor.
+      #enabled-protocols: TLSv1.2 #Lista de protocolos ssl que soportará el servidor. 
+spring:
+   security:
+      csrf:
+         enabled: false
+      #jwt:
+         #authorization-token-secret: ${sm.spring.security.authorization-token-secret} #Llave secreta para validar la firma de los tokens jwt a usar en microfrontends
+   #ssl:
+      #bundle:
+         #pem:
+            #tomcat:
+               #keystore:
+                  #type: PKCS12 #Tipo de keystore.
+                  #certificate: ${sm.spring.ssl.bundle.pem.tomcat.keystore.certificate} #Ruta del certificado ssl. Para dev, qa, sand y prod, esta propiedad debe darse de alta en aws secrets manager. Para local, esta propiedad debe pasarse mediante propiedades del sistema o variables de ambiente.
+                  #private-key: ${sm.spring.ssl.bundle.pem.tomcat.keystore.privateKey} #Ruta de la llave privada ssl. Para dev, qa, sand y prod, esta propiedad debe darse de alta en aws secrets manager. Para local, esta propiedad debe pasarse mediante propiedades del sistema o variables de ambiente.
+                  #private-key-password: ${sm.spring.ssl.bundle.pem.tomcat.keystore.privateKeyPassword} #Contraseña de la llave privada ssl. Para dev, qa, sand y prod, esta propiedad debe darse de alta en aws secrets manager. Para local, esta propiedad debe pasarse mediante propiedades del sistema o variables de ambiente.
+   jpa:
+      open-in-view: false
+   datasource:
+      one:
+         driver-class-name: com.mysql.cj.jdbc.Driver
+         url: jdbc:mysql://localhost:3320/APP
+         username: ${sm.spring.datasource.one.username} #Usuario de base de datos. Para dev, qa, sand y prod, esta propiedad debe darse de alta en aws secrets manager. Para local, esta propiedad debe pasarse mediante propiedades del sistema o variables de ambiente.
+         password: ${sm.spring.datasource.one.password} #Contraseña de base de datos. Para dev, qa, sand y prod, esta propiedad debe darse de alta en aws secrets manager. Para local, esta propiedad debe pasarse mediante propiedades del sistema o variables de ambiente.
+         hikari:
+            pool-name: pool-one #Nombre del pool de conexiones.
+            minimum-idle: 1 #Cantidad mínima de conexiones que se mantendran en el pool de conexiones.
+            maximum-pool-size: 3 #Cantidad máxima de conexiones que se mantendran en el pool de conexiones.
+            connection-timeout: 30000 #Cantidad máxima de milisegundos que el cliente esperará para obtener una conexión del pool.
+            idle-timeout: 600000 #Cantidad máxima de milisegundos que una conexión puede permanecer inactiva en el pool.
+            max-lifetime: 1800000 #Cantidad máxima de milisegundos que una conexión tendrá vida útil en el pool.
+         jpa:
+            generate-ddl: false
+            show-sql: false
+            entity-packages-to-scan: mx.openpay.multicountry.**.entity #Lista de uno o más paquetes base para buscar las entidades.
+            repository-base-packages: mx.openpay.multicountry.**.repository #Lista de uno o más paquetes base para buscar los repositorios.
+      #two:
+         #driver-class-name: com.mysql.cj.jdbc.Driver
+         #url: jdbc:mysql://localhost:3320/APP
+         #username: ${sm.spring.datasource.two.username} #Usuario de base de datos. Para dev, qa, sand y prod, esta propiedad debe darse de alta en aws secrets manager. Para local, esta propiedad debe pasarse mediante propiedades del sistema o variables de ambiente.
+         #password: ${sm.spring.datasource.two.password} #Contraseña de base de datos. Para dev, qa, sand y prod, esta propiedad debe darse de alta en aws secrets manager. Para local, esta propiedad debe pasarse mediante propiedades del sistema o variables de ambiente.
+         #hikari:
+            #pool-name: pool-two #Nombre del pool de conexiones.
+            #minimum-idle: 1 #Cantidad mínima de conexiones que se mantendran en el pool de conexiones.
+            #maximum-pool-size: 3 #Cantidad máxima de conexiones que se mantendran en el pool de conexiones.
+            #connection-timeout: 30000 #Cantidad máxima de milisegundos que el cliente esperará para obtener una conexión del pool.
+            #idle-timeout: 600000 #Cantidad máxima de milisegundos que una conexión puede permanecer inactiva en el pool.
+            #max-lifetime: 1800000 #Cantidad máxima de milisegundos que una conexión tendrá vida útil en el pool.
+         #jpa:
+            #generate-ddl: false
+            #show-sql: false
+            #entity-packages-to-scan: mx.openpay.multicountry.**.entity #Lista de uno o más paquetes base para buscar las entidades.
+            #repository-base-packages: mx.openpay.multicountry.**.repository #Lista de uno o más paquetes base para buscar los repositorios.
+   cloud:
+      aws:
+         secretsmanager:
+            enabled: false
+         s3:
+            enabled: false
+            endpoint: http://s3.localhost.localstack.cloud:4520
+         sqs:
+            enabled: false
+            endpoint: http://sqs.localhost.localstack.cloud:4520
+         kms:
+            enabled: false
+         dynamodb:
+            enabled: false
+            endpoint: http://localhost.localstack.cloud:4520
+springdoc:
+   swagger-ui:
+      enabled: true #Se debe deshabilitar para los ambientes sandbox y production
+   api-docs:
+      enabled: true #Se debe deshabilitar para los ambientes sandbox y production
+      

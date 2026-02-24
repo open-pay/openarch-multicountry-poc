@@ -1,0 +1,3 @@
+Contains the abstract or global classes for tests.
+
+This file can be deleted.

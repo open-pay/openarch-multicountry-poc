@@ -1,0 +1,3 @@
+Contains the unit tests for global utility classes.
+
+This file can be deleted.

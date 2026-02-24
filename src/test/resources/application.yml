@@ -1,0 +1,63 @@
+application:
+   version: '@project.version@'
+   build: '@build.number@'
+server:
+   port: 0
+   ssl:
+      enabled: false
+spring:
+   application:
+      id: ${random.uuid}
+      name: tests
+   cloud:
+      config:
+         enabled: false
+      aws:
+         secretsmanager:
+            enabled: false
+         s3:
+            enabled: false
+         sqs:
+            enabled: false
+         kms:
+            enabled: false
+         dynamodb:
+            enabled: false
+   jpa:
+      open-in-view: false
+   datasource:
+      one:
+         driver-class-name: com.mysql.cj.jdbc.Driver
+         url: test
+         username: test
+         password: test
+         hikari:
+            pool-name: pool-one
+            minimum-idle: 1
+            maximum-pool-size: 3
+            connection-timeout: 30000
+            idle-timeout: 600000
+            max-lifetime: 1800000
+         jpa:
+            generate-ddl: false
+            show-sql: false
+            entity-packages-to-scan: mx.openpay.multicountry.**.entity
+            repository-base-packages: mx.openpay.multicountry.**.repository
+      two:
+         driver-class-name: com.mysql.cj.jdbc.Driver
+         url: test
+         username: test
+         password: test
+         hikari:
+            pool-name: pool-two
+            minimum-idle: 1
+            maximum-pool-size: 3
+            connection-timeout: 30000
+            idle-timeout: 600000
+            max-lifetime: 1800000
+         jpa:
+            generate-ddl: false
+            show-sql: false
+            entity-packages-to-scan: mx.openpay.multicountry.**.entity
+            repository-base-packages: mx.openpay.multicountry.**.repository
+            

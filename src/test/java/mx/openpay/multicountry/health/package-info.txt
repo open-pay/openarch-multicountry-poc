@@ -1,0 +1,3 @@
+Contains the unit tests for health indicator implementations.
+
+This file can be deleted.

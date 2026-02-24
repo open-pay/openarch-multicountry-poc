@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration>
+
+	<springProperty scope="context" name="logging.level.root" source="logging.level.root" defaultValue="INFO"/>
+	<springProperty scope="context" name="spring.application.id" source="spring.application.id"/>
+	<springProperty scope="context" name="spring.application.name" source="spring.application.name"/>
+	<springProperty scope="context" name="logging.appenders.console.enabled" source="logging.appenders.console.enabled" defaultValue="true"/>
+	<springProperty scope="context" name="logging.appenders.file.enabled" source="logging.appenders.file.enabled"/>
+	<springProperty scope="context" name="logging.appenders.file.absolute-path" source="logging.appenders.file.absolute-path"/>
+	<springProperty scope="context" name="logging.appenders.rapid7.enabled" source="logging.appenders.rapid7.enabled"/>
+	<springProperty scope="context" name="logging.appenders.rapid7.token" source="logging.appenders.rapid7.token"/>
+	<springProperty scope="context" name="logging.appenders.rapid7.region" source="logging.appenders.rapid7.region"/>
+	<springProperty scope="context" name="logging.appenders.splunk.enabled" source="logging.appenders.splunk.enabled"/>
+	<springProperty scope="context" name="logging.appenders.splunk.token" source="logging.appenders.splunk.token"/>
+	<springProperty scope="context" name="logging.appenders.splunk.url" source="logging.appenders.splunk.url"/>
+	<springProperty scope="context" name="logging.appenders.splunk.index" source="logging.appenders.splunk.index"/>
+
+	<root level="${logging.level.root}" />
+	
+	<condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+		<key>logging.appenders.console.enabled</key>
+		<value>true</value>
+	</condition>
+	<if>
+		<then>
+			<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+				<encoder>
+					<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSS} %level %X{traceId:--} %X{spanId:--} %thread %logger{40}: %message%n</pattern>
+				</encoder>
+			</appender>
+			<root>
+				<appender-ref ref="console" />
+			</root>
+			<logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="ERROR">
+				<appender-ref ref="console" />
+			</logger>
+			<logger name="org.hibernate.validator.messageinterpolation" level="ERROR">
+				<appender-ref ref="console" />
+			</logger>
+		</then>
+	</if>
+	
+	<condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+		<key>logging.appenders.file.enabled</key>
+		<value>true</value>
+	</condition>
+	<if>
+		<then>
+			<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+				<file>${logging.appenders.file.absolute-path}</file>
+				<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+					<fileNamePattern>${logging.appenders.file.absolute-path}.%d{yyyy-MM-dd}.gz</fileNamePattern>
+				</rollingPolicy>
+				<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+					<providers>
+						<timestamp>
+							<fieldName>timestamp</fieldName>
+							<timeZone>UTC</timeZone>
+						</timestamp>
+						<pattern>
+							<pattern>
+								{
+								"level": "%level",
+								"app_id": "${spring.application.id:--}",
+								"app_name": "${spring.application.name:--}",
+								"trace_id": "%X{traceId:--}",
+								"span_id": "%X{spanId:--}",
+								"thread": "%thread",
+								"class": "%logger{40}",
+								"message": "%message",
+								"stack_trace": "%exception"
+								}
+							</pattern>
+						</pattern>
+					</providers>
+				</encoder>
+			</appender>
+			<root>
+				<appender-ref ref="file" />
+			</root>
+			<logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="ERROR">
+				<appender-ref ref="file" />
+			</logger>
+			<logger name="org.hibernate.validator.messageinterpolation" level="ERROR">
+				<appender-ref ref="file" />
+			</logger>
+		</then>
+	</if>
+	
+	<condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+		<key>logging.appenders.rapid7.enabled</key>
+		<value>true</value>
+	</condition>
+	<if>
+		<then>
+			<appender name="rapid7" class="com.rapid7.logback.LogentriesAppender">
+				<Token>${logging.appenders.rapid7.token}</Token>
+				<Region>${logging.appenders.rapid7.region}</Region>
+				<Debug>false</Debug>
+				<Ssl>true</Ssl>
+				<facility>USER</facility>
+				<encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+					<providers>
+						<timestamp>
+							<fieldName>timestamp</fieldName>
+							<timeZone>UTC</timeZone>
+						</timestamp>
+						<pattern>
+							<pattern>
+								{
+								"level": "%level",
+								"app_id": "${spring.application.id:--}",
+								"app_name": "${spring.application.name:--}",
+								"trace_id": "%X{traceId:--}",
+								"span_id": "%X{spanId:--}",
+								"thread": "%thread",
+								"class": "%logger{40}",
+								"message": "%message",
+								"stack_trace": "%exception"
+								}
+							</pattern>
+						</pattern>
+					</providers>
+				</encoder>
+			</appender>
+			<root>
+				<appender-ref ref="rapid7" />
+			</root>
+			<logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="ERROR">
+				<appender-ref ref="rapid7" />
+			</logger>
+			<logger name="org.hibernate.validator.messageinterpolation" level="ERROR">
+				<appender-ref ref="rapid7" />
+			</logger>
+		</then>
+	</if>
+	
+	<condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+		<key>logging.appenders.splunk.enabled</key>
+		<value>true</value>
+	</condition>
+	<if>
+		<then>
+			<appender name="splunk" class="com.splunk.logging.HttpEventCollectorLogbackAppender">
+				<token>${logging.appenders.splunk.token}</token>
+				<url>${logging.appenders.splunk.url}</url>
+				<index>${logging.appenders.splunk.index}</index>
+				<batch_size_count>10</batch_size_count>
+				<disableCertificateValidation>true</disableCertificateValidation>
+				<layout>
+					<pattern>
+						{
+						"level": "%level",
+						"app_id": "${spring.application.id:--}",
+						"app_name": "${spring.application.name:--}",
+						"trace_id": "%X{traceId:--}",
+						"span_id": "%X{spanId:--}",
+						"thread": "%thread",
+						"class": "%logger{40}",
+						"message": "%message",
+						"stack_trace": "%exception"
+						}
+					</pattern>
+				</layout>
+			</appender>
+			<root>
+				<appender-ref ref="splunk" />
+			</root>
+			<logger name="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" level="ERROR">
+				<appender-ref ref="splunk" />
+			</logger>
+			<logger name="org.hibernate.validator.messageinterpolation" level="ERROR">
+				<appender-ref ref="splunk" />
+			</logger>
+		</then>
+	</if>
+	
+</configuration>

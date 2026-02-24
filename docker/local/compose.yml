@@ -1,0 +1,40 @@
+name: openarch-multicountry-poc
+services:
+   openarch-multicountry-poc-mysql8:
+      container_name: openarch-multicountry-poc-mysql8
+      image: mysql:8
+      ports:
+      - 3320:3306
+      volumes:
+      - openarch-multicountry-poc-mysql8-data:/var/lib/mysql
+      environment:
+         MYSQL_DATABASE: APP
+         MYSQL_USER: user
+         MYSQL_PASSWORD: local
+         MYSQL_ROOT_PASSWORD: toor
+   openarch-multicountry-poc-aws:
+      container_name: openarch-multicountry-poc-aws
+      image: localstack/localstack
+      ports:
+      - 4520:4566
+      volumes:
+      - ./aws/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh
+      - openarch-multicountry-poc-aws-data:/var/lib/localstack
+      environment:
+         DEBUG: 0
+         SERVICES: sqs,s3,dynamodb
+   openarch-multicountry-poc-valkey:
+      container_name: openarch-multicountry-poc-valkey
+      image: valkey/valkey:8
+      ports:
+      - 6320:6379
+      volumes:
+      - ./valkey/valkey.conf:/usr/local/etc/valkey/valkey.conf
+      - openarch-multicountry-poc-valkey-data:/var/lib/valkey
+      command: valkey-server /usr/local/etc/valkey/valkey.conf
+      
+volumes:
+   openarch-multicountry-poc-mysql8-data:
+   openarch-multicountry-poc-aws-data:
+   openarch-multicountry-poc-valkey-data:
+   

@@ -1,0 +1,53 @@
+application:
+   version: '@project.version@'
+   build: '@build.number@'
+spring:
+   application:
+      id: ${random.uuid}
+      name: openarch-multicountry-poc
+      
+--- #Ambiente Local
+spring:
+   config:
+      activate:
+         on-profile: local & (mx | co | pe | ar | es)
+      import: 
+         - optional:classpath:openarch-multicountry-poc-mx.yml
+         - optional:classpath:openarch-multicountry-poc-co.yml
+         - optional:classpath:openarch-multicountry-poc-pe.yml
+         - optional:classpath:openarch-multicountry-poc-ar.yml
+         - optional:classpath:openarch-multicountry-poc-es.yml
+   cloud:
+      config:
+         enabled: false
+         
+--- #Ambiente Cloud
+spring:
+   config:
+      activate:
+         on-profile: dev | qa | sand | prod
+      import: configserver:${custom.cloud.config.uri}
+   cloud:
+      config:
+         enabled: true
+         
+--- #Ambiente AWS LATAM
+spring:
+   config:
+      activate:
+         on-profile: mx | co | pe | ar
+   cloud:
+      aws:
+         region:
+            static: us-east-1
+            
+--- #Ambiente AWS Europa
+spring:
+   config:
+      activate:
+         on-profile: es
+   cloud:
+      aws:
+         region:
+            static: eu-west-1
+            
